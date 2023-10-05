@@ -8,3 +8,4 @@ Kubernetes içerisinde;
 
 4- terraform template
 
+kurgulanan yapılardır.
