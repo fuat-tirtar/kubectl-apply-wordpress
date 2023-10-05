@@ -1,6 +1,6 @@
 Jenkins Kurulumu ve Wordpress-JenkinsFile Oluşturma: 
 
-Jenkins'i kurup ve çalıştırıyoruz. Helm ile kurulumu;
+Jenkins'i kurup çalıştırıyoruz. Helm ile kurulumu aşağıda yer almaktadır;
 helm install jenkins -n jenkins --create-namespace oci://registry-1.docker.io/bitnamicharts/jenkins
 
 Jenkins için Gerekli Plugin'leri Ekleme: 
