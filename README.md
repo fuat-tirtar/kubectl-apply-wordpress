@@ -1,4 +1,4 @@
-Kubernetes içerisinde kurulun,
+Kubernetes içerisinde;
 
 1- kubectl apply ile kurulan wordpress
 
