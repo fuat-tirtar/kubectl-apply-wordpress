@@ -19,7 +19,7 @@ Jenkinsfile Oluşturma: Jenkinsfile'ınızı aşağıdaki gibi oluşturuyoruz:
 pipeline {
     agent {
         kubernetes {
-            label 'wordpress'  // Kubernetes agent tanımlayın
+            label 'wordpress'  // Kubernetes agent tanımlayoruz
             defaultContainer 'jnlp'
             yaml """
                 apiVersion: v1
