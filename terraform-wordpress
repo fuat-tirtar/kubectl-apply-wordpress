@@ -1,0 +1,94 @@
+wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update
+sudo apt install terraform -y
+mkdir terraform-project
+
+providers.tf //içerisindekiler
+terraform {
+  required_providers {
+    kubernetes = {
+      source = "hashicorp/kubernetes"
+      version = "2.11.0"
+    }
+  }
+}
+---------------------------------------------
+k8s.tf//içerisindekiler
+provider "kubernetes" {
+  config_path    = "~/.kube/config"
+  config_context = "minikube"
+}
+
+resource "kubernetes_namespace" "example" {
+  metadata {
+    name = "k8s-ns-by-tf"
+  }
+}
+
+resource "kubernetes_deployment" "example" {
+  metadata {
+    name = "terraform-example"
+    labels = {
+      test = "MyExampleApp"
+    }
+    namespace = "k8s-ns-by-tf"
+  }
+
+  spec {
+    replicas = 2
+
+    selector {
+      match_labels = {
+        test = "MyExampleApp"
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          test = "MyExampleApp"
+        }
+      }
+
+      spec {
+        container {
+          image = "wordpress"
+          name  = "example"
+
+          resources {
+            limits = {
+              cpu    = "0.5"
+              memory = "512Mi"
+            }
+            requests = {
+              cpu    = "250m"
+              memory = "50Mi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+------------------------
+terraform init
+terraform plan
+terraform apply
+-------------------------
+Çalıştığını görmek için service ekliyoruz, minikube içerisine;
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-terraform
+spec:
+  type: NodePort
+  selector:
+    test: MyExampleApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30007
+
+
