@@ -49,11 +49,11 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 container('helm') {
-                    sh 'helm install wordpress bitnami/wordpress --namespace wordpress -f path/to/your/values.yaml'
+                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'test')]) {
+                        sh 'helm install wordpress bitnami/wordpress --namespace wordpress-jenkins --kubeconfig=test'
+                    }
                 }
             }
         }
     }
 }
-
-
