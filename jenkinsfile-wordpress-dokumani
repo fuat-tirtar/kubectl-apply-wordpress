@@ -19,41 +19,43 @@ Jenkinsfile Oluşturma: Jenkinsfile'ınızı aşağıdaki gibi oluşturuyoruz:
 pipeline {
     agent {
         kubernetes {
-            label 'wordpress'  // Kubernetes agent tanımlayoruz
-            defaultContainer 'jnlp'
             yaml """
                 apiVersion: v1
                 kind: Pod
                 metadata:
                   labels:
-                    app: wordpress
+                    app: kubernetes
                 spec:
                   containers:
                   - name: helm
-                    image: bitnami/helm:3
+                    image: ubuntu:latest
                     command: ['cat']
                     tty: true
                   - name: kubectl
-                    image: bitnami/kubectl:1
+                    image: bitnami/kubectl:latest
                     command: ['cat']
                     tty: true
             """
         }
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+//        stage('Checkout') {
+//            steps {
+//                checkout scm
+//            }
+//        }
         stage('Deploy to Kubernetes') {
             steps {
                 container('helm') {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'test')]) {
-                        sh 'helm install wordpress bitnami/wordpress --namespace wordpress-jenkins --kubeconfig=test'
+                    sh 'apt update && apt install wget -y'
+                    sh 'wget https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz && tar -zxvf helm*.tar.gz && cp ./linux-amd64/helm /usr/local/bin/helm'
+                    withCredentials([file(credentialsId: 'jenkinskubeconfig', variable: 'test')]) {
+                        sh 'helm install wordpress oci://registry-1.docker.io/bitnamicharts/wordpress --namespace wordpress-jenkins --create-namespace --kubeconfig=$test'
                     }
+                        
                 }
             }
         }
     }
 }
+
