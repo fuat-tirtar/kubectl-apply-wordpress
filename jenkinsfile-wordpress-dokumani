@@ -1,21 +1,3 @@
-Jenkins Kurulumu ve Wordpress-JenkinsFile Oluşturma: 
-
-Jenkins'i kurup ve çalıştırıyoruz. Helm ile kurulumu;
-helm install jenkins -n jenkins --create-namespace oci://registry-1.docker.io/bitnamicharts/jenkins
-
-Jenkins için Gerekli Plugin'leri Ekleme: 
-Jenkins'inizde Docker, Kubernetes, Git,Pipeline ve Helm gibi ilgili plugin'leri yüklüyoruz.
-
-Yeni Bir Jenkins Projesi Oluşturma:
-Jenkins ana sayfasına gidin ve "New Item" seçeneğini tıklıyoruz.
-Proje türünü seçiyoruz (örneğin, "Pipeline" seçebilirsiniz) ve bir proje adı veriyoruz.
-
-Pipeline Tanımlama:
-"Pipeline" sekmesine gidiyoruz.
-"Definition" alanını "Pipeline script from SCM" olarak ayarlayoruz.
-SCM (Source Code Management) türünü seçin ve Jenkinsfile'ın depolandığı kaynağı belirtin (örneğin, GitHub).
-Jenkinsfile Oluşturma: Jenkinsfile'ınızı aşağıdaki gibi oluşturuyoruz:
-
 pipeline {
     agent {
         kubernetes {
